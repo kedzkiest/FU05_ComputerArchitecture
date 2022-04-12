@@ -37,41 +37,41 @@ innerloop:  addi $t4, $t1, -1 # var i - 1
 	    or $t6, $0, $0 # cnt = 0
 
 addressIncrementLoop:	
-	    beq $t6, $t3, endAddressIncrementLp
-	    addi $t6, $t6, 1
-	    addi $t5, $t5, 4
+	    beq $t6, $t3, endAddressIncrementLp # if cnt == j, then endloop
+	    addi $t6, $t6, 1			# cnt++
+	    addi $t5, $t5, 4			# advance A's base address by 4
 	    j addressIncrementLoop
 
 endAddressIncrementLp:
-	    lw $t7, 0($t5)
-	    lw $t8, 4($t5)
+	    lw $t7, 0($t5) # load A[j] into $t7
+	    lw $t8, 4($t5) # load A[j+1] into $t8
 	    slt $t2, $t8, $t7 # test swap condition
-	    beq $t2, $0, Else
+	    beq $t2, $0, Else				
 	    or $t9, $0, $0 # tmp = 0
 	    add $t9, $0, $t7 # tmp = A[j]
 	    add $t7, $0, $t8 # A[j] = A[j+1]
 	    add $t8, $0, $t9 # A[j+1] = tmp
-	    sw $t7, 0($t5)
-	    sw $t8, 4($t5)
+	    sw $t7, 0($t5) # store A[j] data into the memory
+	    sw $t8, 4($t5) # store A[j+1] data into the memory
 	
-            # step for inner loop, e.g., j++
-	    addi $t3, $t3, -1
+            # step for inner loop
+	    addi $t3, $t3, -1		# j--
 
             j innerloop
 
 Else:
-	    # step for inner loop, e.g., j++
-	    addi $t3, $t3, -1
+	    # step for inner loop
+	    addi $t3, $t3, -1		# j--
 
             j innerloop
 	
-endInnerLp: # is there more to do here?
+endInnerLp:
 
-            # step for outer loop, e.g., i++
-	    addi $t1, $t1, 1
+            # step for outer loop
+	    addi $t1, $t1, 1		# i++
 
             j outerloop
 
-endOuterLp: # is there more to do here?
+endOuterLp:
 	
 exit:	j exit

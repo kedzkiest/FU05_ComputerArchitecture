@@ -12,22 +12,35 @@ begin
 
    RegNum2ToRead[4:0] = 5'b00000;
 
+   // set target register to $1
    RegNumToWrite[4:0] = 5'b00001;
-   
+
+   // set data to write in $1 (1280188)
    DataToWrite[31:0] = 32'b00000001001010000000000110001000;
 
+   // enable write mode
    WriteEnable = 1'b1;
    
    clear = 1'b0;
    clock = 1'b0;
 
+   // at 30ns, first data is written in $1
+   
    #45
+
+   // set next target register to $2
    RegNumToWrite[4:0] = 5'b00010;
+
+   // set next data to write in $2 (2022)
    DataToWrite[31:0] = 32'b00000000000000000010000000100010;
 
+   // at 90ns, second data is written in $2
+   
    #50
 
+   // read $1
    RegNum1ToRead[4:0] = 5'b00001;
+   // read $2
    RegNum2ToRead[4:0] = 5'b00010;
 
    #30

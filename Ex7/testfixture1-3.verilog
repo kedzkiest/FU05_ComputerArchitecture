@@ -1,0 +1,63 @@
+initial
+begin
+// text segment
+Mem.cell['h00000000] = 32'h08000400;   // j 0x1000
+
+Mem.cell['h00001000] = 32'h00004025;   // or $8, $0, $0                   ; 16: or $t0, $0, $0 # i = 0
+Mem.cell['h00001004] = 32'h8c095000;   // lw $9, 20480($0) [N]            ; 17: lw $t1, N
+Mem.cell['h00001008] = 32'h340a5004;   // ori $10, $0, 20484 [A]          ; 18: la $t2, A      # load the base address of array A into $t2
+Mem.cell['h0000100c] = 32'h340b502c;   // ori $11, $0, 20524 [B]          ; 19: la $t3, B      # load the base address of array B into $t3
+Mem.cell['h00001010] = 32'h11090008;   // beq $8, $9, 32 [loopend-0x00001010]; 21: beq $t0, $t1, loopend        # if i == N, then loopend
+Mem.cell['h00001014] = 32'h8d4c0000;   // lw $12, 0($10)                  ; 22: lw $t4, 0($t2)          # load A[i] into $t4
+Mem.cell['h00001018] = 32'h8d6d0000;   // lw $13, 0($11)                  ; 23: lw $t5, 0($t3)          # load B[i] into $t5
+Mem.cell['h0000101c] = 32'h218d0000;   // addi $13, $12, 0                ; 24: addi $t5, $t4, 0        # B[i] = A[i]
+Mem.cell['h00001020] = 32'had6d0000;   // sw $13, 0($11)                  ; 25: sw $t5, 0($t3)          # store B[i] data into the memory
+Mem.cell['h00001024] = 32'h214a0004;   // addi $10, $10, 4                ; 26: addi $t2, $t2, 4        # advance A's and B's base addresses by 4 to -
+Mem.cell['h00001028] = 32'h216b0004;   // addi $11, $11, 4                ; 27: addi $t3, $t3, 4        # - access the next variables
+Mem.cell['h0000102c] = 32'h21080001;   // addi $8, $8, 1                  ; 28: addi $t0 $t0, 1         # i++
+Mem.cell['h00001030] = 32'h08000404;   // j 0x00001010 [loop]             ; 29: j loop
+Mem.cell['h00001034] = 32'h0800040d;   // j 0x00001034 [exit]             ; 33: j exit
+
+// data segment
+Mem.cell['h00005000] = 32'h0000000a;
+Mem.cell['h00005004] = 32'h00000009;
+Mem.cell['h00005008] = 32'h00000003;
+Mem.cell['h0000500c] = 32'h0000000c;
+Mem.cell['h00005010] = 32'h00000007;
+Mem.cell['h00005014] = 32'h00000017;
+Mem.cell['h00005018] = 32'h00000001;
+Mem.cell['h0000501c] = 32'h00000017;
+Mem.cell['h00005020] = 32'h0000002b;
+Mem.cell['h00005024] = 32'h00000036;
+Mem.cell['h00005028] = 32'h0000001f;
+Mem.cell['h0000502c] = 32'h00000000;
+Mem.cell['h00005030] = 32'h00000000;
+Mem.cell['h00005034] = 32'h00000000;
+Mem.cell['h00005038] = 32'h00000000;
+Mem.cell['h0000503c] = 32'h00000000;
+Mem.cell['h00005040] = 32'h00000000;
+Mem.cell['h00005044] = 32'h00000000;
+Mem.cell['h00005048] = 32'h00000000;
+Mem.cell['h0000504c] = 32'h00000000;
+Mem.cell['h00005050] = 32'h00000000;
+
+CK = 1'b1;
+CLR = 1'b1;
+#110
+CLR = 1'b0;
+#20000
+
+$display("B[0] = %d\n", Mem.cell['h502c]);
+$display("B[1] = %d\n", Mem.cell['h5030]);
+$display("B[2] = %d\n", Mem.cell['h5034]);
+$display("B[3] = %d\n", Mem.cell['h5038]);
+$display("B[4] = %d\n", Mem.cell['h503c]);
+$display("B[5] = %d\n", Mem.cell['h5040]);
+$display("B[6] = %d\n", Mem.cell['h5044]);
+$display("B[7] = %d\n", Mem.cell['h5048]);
+$display("B[8] = %d\n", Mem.cell['h504c]);
+$display("B[9] = %d\n", Mem.cell['h5050]);
+
+$finish;
+end
+always #50 CK = ~CK;

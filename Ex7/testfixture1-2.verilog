@@ -1,0 +1,43 @@
+initial
+begin
+// text segment
+Mem.cell['h00000000] = 32'h08000400;   // j 0x1000
+
+Mem.cell['h00001000] = 32'h00004025;   // or $8, $0, $0                   ; 16: or $t0, $0, $0 # i = 0
+Mem.cell['h00001004] = 32'h8c095000;   // lw $9, 20480($0) [N]            ; 17: lw $t1, N
+Mem.cell['h00001008] = 32'h00005025;   // or $10, $0, $0                  ; 18: or $t2, $0, $0 # sum = 0
+Mem.cell['h0000100c] = 32'h340b5004;   // ori $11, $0, 20484 [A]          ; 19: la $t3, A		# load the base address of array A into $t3
+Mem.cell['h00001010] = 32'h11090005;   // beq $8, $9, 20 [loopend-0x00001010]; 21: beq $t0, $t1, loopend	# if i == N, then loopend
+Mem.cell['h00001014] = 32'h8d6c0000;   // lw $12, 0($11)                  ; 22: lw $t4, 0($t3)		# load A[i] into $t4
+Mem.cell['h00001018] = 32'h014c5020;   // add $10, $10, $12               ; 23: add $t2, $t2, $t4	# sum += A[i]
+Mem.cell['h0000101c] = 32'h21080001;   // addi $8, $8, 1                  ; 24: addi $t0, $t0, 1	# i++
+Mem.cell['h00001020] = 32'h216b0004;   // addi $11, $11, 4                ; 25: addi $t3, $t3, 4	# advance A's base address by 4 to access the -
+Mem.cell['h00001024] = 32'h08000404;   // j 0x00001010 [loop]             ; 26: j loop			# - next variable
+Mem.cell['h00001028] = 32'hac0a502c;   // sw $10, 20524($0) [S]           ; 28: sw $t2, S	# store the sum data into the memory
+Mem.cell['h0000102c] = 32'h0800040b;   // j 0x0000102c [exit]             ; 30: j exit
+
+// data segment
+Mem.cell['h00005000] = 32'h0000000a;
+Mem.cell['h00005004] = 32'h00000009;
+Mem.cell['h00005008] = 32'h00000003;
+Mem.cell['h0000500c] = 32'h0000000c;
+Mem.cell['h00005010] = 32'h00000007;
+Mem.cell['h00005014] = 32'h00000017;
+Mem.cell['h00005018] = 32'h00000001;
+Mem.cell['h0000501c] = 32'h00000017;
+Mem.cell['h00005020] = 32'h0000002b;
+Mem.cell['h00005024] = 32'h00000036;
+Mem.cell['h00005028] = 32'h0000001f;
+Mem.cell['h0000502c] = 32'h00000000;
+
+CK = 1'b1;
+CLR = 1'b1;
+#110
+CLR = 1'b0;
+#20000
+
+$display("S = %d", Mem.cell['h502c]);
+
+$finish;
+end
+always #50 CK = ~CK;

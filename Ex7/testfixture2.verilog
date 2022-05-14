@@ -1,0 +1,39 @@
+initial
+begin
+
+// text segment
+Mem.cell['h00000000] = 32'h08000400;   // j 0x1000
+
+Mem.cell['h00001000] = 32'h8c045000;   // lw $4, 20480($0) [A]            ; 7: lw $a0, A # multiplicand
+Mem.cell['h00001004] = 32'h8c055004;   // lw $5, 20484($0) [B]            ; 8: lw $a1, B # multiplier
+Mem.cell['h00001008] = 32'h00001025;   // or $2, $0, $0                   ; 9: or $v0, $0, $0 # result = 0
+Mem.cell['h0000100c] = 32'h00004025;   // or $8, $0, $0                   ; 10: or $t0, $0, $0 # cnt = 0
+Mem.cell['h00001010] = 32'h20090001;   // addi $9, $0, 1                  ; 11: addi $t1, $0, 1 # bit mask. initially 1, will be L-shifted
+Mem.cell['h00001014] = 32'h34010020;   // ori $1, $0, 32                  ; 13: beq $t0, 32, loopend
+Mem.cell['h00001018] = 32'h10280007;   // beq $1, $8, 28 [loopend-0x00001018]
+Mem.cell['h0000101c] = 32'h00a95024;   // and $10, $5, $9                 ; 14: and $t2, $a1, $t1 # 1st -> 32nd bit eject
+Mem.cell['h00001020] = 32'h11400001;   // beq $10, $0, 4 [next-0x00001020]; 15: beq $t2, $0, next # if ejected bit is 0, then no addition
+Mem.cell['h00001024] = 32'h00441020;   // add $2, $2, $4                  ; 16: add $v0, $v0, $a0
+Mem.cell['h00001028] = 32'h00842020;   // add $4, $4, $4                  ; 18: add $a0, $a0, $a0 # multiplicand 1-bit L-shift
+Mem.cell['h0000102c] = 32'h01294820;   // add $9, $9, $9                  ; 19: add $t1, $t1, $t1 # bit mask 1-bit L-shift
+Mem.cell['h00001030] = 32'h21080001;   // addi $8, $8, 1                  ; 20: addi $t0, $t0, 1 # cnt++
+Mem.cell['h00001034] = 32'h08000405;   // j 0x00001014 [loop]             ; 21: j loop
+Mem.cell['h00001038] = 32'hac025008;   // sw $2, 20488($0) [S]            ; 23: sw $v0, S
+Mem.cell['h0000103c] = 32'h0800040f;   // j 0x0000103c [exit]             ; 25: j exit
+
+// data segment
+Mem.cell['h00005000] = 32'h0000001c;
+Mem.cell['h00005004] = 32'h000000bc;
+Mem.cell['h00005008] = 32'h00000000;
+
+CK = 1'b1;
+CLR = 1'b1;
+#110
+CLR = 1'b0;
+#100000
+
+$display("S = %d", Mem.cell['h5008]);
+
+$finish;
+end
+always #50 CK = ~CK;

@@ -34,48 +34,44 @@ module MainCtrl ( RegDst, Jump, Branch, MemRead, MemtoReg, ALUOp, MemWrite, ALUS
 	 ALUOp    <= 2'b00;     
        end else
        if( Opcode == 43 ) begin // Opcode : SW
-	 ... SW
 	 Jump     <= 1'b0;
-	 RegDst   <= 1'b0;
+	 RegDst   <= 1'bx;
 	 Branch   <= 1'b0;
 	 MemRead  <= 1'b0;
-	 MemtoReg <= 1'b0;
+	 MemtoReg <= 1'bx;
 	 MemWrite <= 1'b1;
 	 ALUSrc   <= 1'b1;
 	 RegWrite <= 1'b0;
 	 ALUOp    <= 2'b00;
        end else 
        if( Opcode == 4 ) begin // Opcode : BEQ
-	 ... BEQ
 	 Jump     <= 1'b0;
-	 RegDst   <= 1'b0;
+	 RegDst   <= 1'bx;
 	 Branch   <= 1'b1;
 	 MemRead  <= 1'b0;
-	 MemtoReg <= 1'b0;
+	 MemtoReg <= 1'bx;
 	 MemWrite <= 1'b0;
 	 ALUSrc   <= 1'b0;
 	 RegWrite <= 1'b0;
 	 ALUOp    <= 2'b01;
        end else 
        if( Opcode == 2 ) begin // Opcode : J
-	 ... J
 	 Jump     <= 1'b1;
-	 RegDst   <= 1'b0;
-	 Branch   <= 1'b0;
-	 MemRead  <= 1'b1;
-	 MemtoReg <= 1'b1;
+	 RegDst   <= 1'bx;
+	 Branch   <= 1'bx;
+	 MemRead  <= 1'bx;
+	 MemtoReg <= 1'bx;
 	 MemWrite <= 1'b0;
-	 ALUSrc   <= 1'b1;
-	 RegWrite <= 1'b1;
-	 ALUOp    <= 2'b00;
+	 ALUSrc   <= 1'bx;
+	 RegWrite <= 1'b0;
+	 ALUOp    <= 2'bxx;
        end else 
        if( Opcode == 8 || Opcode == 12 || Opcode == 13 || Opcode == 10 ) begin // Opcode : immediate(ADDI ANDI ORI SLTI)
-	 ... 
 	 Jump     <= 1'b0;
 	 RegDst   <= 1'b0;
 	 Branch   <= 1'b0;
-	 MemRead  <= 1'b1;
-	 MemtoReg <= 1'b1;
+	 MemRead  <= 1'b0;
+	 MemtoReg <= 1'b0;
 	 MemWrite <= 1'b0;
 	 ALUSrc   <= 1'b1;
 	 RegWrite <= 1'b1;
